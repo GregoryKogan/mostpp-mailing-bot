@@ -7,6 +7,7 @@ from telegram import ForceReply, Update
 from telegram.ext import (
     Application,
     CommandHandler,
+    CallbackQueryHandler,
     ContextTypes,
     MessageHandler,
     filters,
@@ -14,7 +15,7 @@ from telegram.ext import (
 )
 
 from middleware import middleware
-from handlers import meaningless, help_command, start, registrations
+from handlers import meaningless, help_command, start, registrations, callback_query
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -31,6 +32,8 @@ def main():
     application.add_handler(CommandHandler("start", middleware(start)))
     application.add_handler(CommandHandler("help", middleware(help_command)))
     application.add_handler(CommandHandler("registrations", middleware(registrations)))
+
+    application.add_handler(CallbackQueryHandler(middleware(callback_query)))
 
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, middleware(meaningless))

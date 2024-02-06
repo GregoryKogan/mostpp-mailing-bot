@@ -5,3 +5,5 @@ REGISTRATION_SUBJECT_KEYWORDS = [
     "регистрация",
     "мероприятие",
 ]
+
+REGISTRATIONS_CACHE_LIFETIME = 180  # in seconds
