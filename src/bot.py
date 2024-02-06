@@ -14,7 +14,7 @@ from telegram.ext import (
 )
 
 from middleware import middleware
-from handlers import meaningless, help_command, start
+from handlers import meaningless, help_command, start, registrations
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -30,6 +30,7 @@ def main():
 
     application.add_handler(CommandHandler("start", middleware(start)))
     application.add_handler(CommandHandler("help", middleware(help_command)))
+    application.add_handler(CommandHandler("registrations", middleware(registrations)))
 
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, middleware(meaningless))

@@ -13,6 +13,18 @@ class RegistrationInfo:
     position: str
     comment: str
 
+    def pretty_str(self) -> str:
+        string = (
+            f"{self.timestamp}\n"
+            f"{self.name}, {self.phone}, {self.email}\n"
+            f"{self.company}, {self.position}"
+        )
+
+        if self.comment:
+            string += f"\n> {self.comment}"
+
+        return string
+
 
 class NotificationScraper:
     def __init__(self, plaintext: str) -> None:
