@@ -1,4 +1,4 @@
-# email-automation
+# mostpp-mailing-bot 
 
 ### Environment variables
 
