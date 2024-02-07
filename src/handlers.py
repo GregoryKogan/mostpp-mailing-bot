@@ -37,7 +37,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         f" - Максимальное время регистрации: \n{config.REGISTRATION_PERIOD} мес\n"
         f" - Ключевые слова в теме письма: \n<code>{', '.join(config.REGISTRATION_SUBJECT_KEYWORDS)}</code>\n"
         f" - Время жизни кеша регистраций: \n{config.REGISTRATIONS_CACHE_LIFETIME} сек\n\n"
-        "Исходный код: <a href='https://github.com/GregoryKogan/email-automation'>GitHub</a>\n\n"
+        "Исходный код: <a href='https://github.com/GregoryKogan/mostpp-mailing-bot'>GitHub</a>\n\n"
         "Тех. поддержка: @GregoryKogan\n",
         parse_mode=constants.ParseMode.HTML,
         disable_web_page_preview=True,
