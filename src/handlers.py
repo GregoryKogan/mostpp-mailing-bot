@@ -47,7 +47,7 @@ async def meaningless(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 async def registrations(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    fetch_registrations()
+    await fetch_registrations(update, context)
 
     cache = Cache()
     registrations = cache.get("registrations")
@@ -102,7 +102,7 @@ async def callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def event_callback_query(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
-    fetch_registrations()
+    await fetch_registrations(update, context)
     cache = Cache()
     registrations = cache.get("registrations")
 
@@ -137,7 +137,7 @@ async def event_callback_query(
 async def confirmation_callback_query(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
-    fetch_registrations()
+    await fetch_registrations(update, context)
     cache = Cache()
     registrations = cache.get("registrations")
 
@@ -173,7 +173,7 @@ async def confirmation_callback_query(
 async def thanks_callback_query(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
-    fetch_registrations()
+    await fetch_registrations(update, context)
     cache = Cache()
     registrations = cache.get("registrations")
 
@@ -209,69 +209,82 @@ async def thanks_callback_query(
 async def send_confirmation_emails(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
-    await query.message.reply_text(
-        "Возможность отправки писем подтверждения участия в мероприятии пока не реализована."
-    )
+    msg_text = "Возможность отправки писем подтверждения участия в мероприятии пока не реализована."
 
     if "last_confirmation_message" in context.user_data:
-        await context.bot.delete_message(
+        await context.bot.edit_message_text(
+            msg_text,
             chat_id=update.effective_chat.id,
             message_id=context.user_data["last_confirmation_message"],
         )
         del context.user_data["last_confirmation_message"]
+    else:
+        await query.message.reply_text(msg_text)
 
 
 async def cancel_sending_confirmation_emails(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
-    await query.message.reply_text(
-        "Письма подтверждения участия <b>не</b> были отправлены.",
-        parse_mode=constants.ParseMode.HTML,
-    )
+    msg_text = "Письма подтверждения участия <b>не</b> были отправлены."
 
     if "last_confirmation_message" in context.user_data:
-        await context.bot.delete_message(
+        await context.bot.edit_message_text(
+            msg_text,
             chat_id=update.effective_chat.id,
             message_id=context.user_data["last_confirmation_message"],
+            parse_mode=constants.ParseMode.HTML,
         )
         del context.user_data["last_confirmation_message"]
+    else:
+        await query.message.reply_text(msg_text)
 
 
 async def send_thankful_emails(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
-    await query.message.reply_text(
-        "Возможность отправки писем благодарности за участие в мероприятии пока не реализована."
-    )
+    msg_text = "Возможность отправки писем благодарности за участие в мероприятии пока не реализована."
 
     if "last_confirmation_message" in context.user_data:
-        await context.bot.delete_message(
+        await context.bot.edit_message_text(
+            msg_text,
             chat_id=update.effective_chat.id,
             message_id=context.user_data["last_confirmation_message"],
         )
         del context.user_data["last_confirmation_message"]
+    else:
+        await query.message.reply_text(msg_text)
 
 
 async def cancel_sending_thankful_emails(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
-    await query.message.reply_text(
-        "Письма благодарности <b>не</b> были отправлены.",
-        parse_mode=constants.ParseMode.HTML,
-    )
+    msg_text = "Письма благодарности <b>не</b> были отправлены."
 
     if "last_confirmation_message" in context.user_data:
-        await context.bot.delete_message(
+        await context.bot.edit_message_text(
+            msg_text,
             chat_id=update.effective_chat.id,
             message_id=context.user_data["last_confirmation_message"],
+            parse_mode=constants.ParseMode.HTML,
         )
         del context.user_data["last_confirmation_message"]
+    else:
+        await query.message.reply_text(msg_text)
 
 
-def fetch_registrations():
+async def fetch_registrations(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cache = Cache()
     if cache.has_key("registrations"):
         return
+
+    if update.message:
+        wait_message = await update.message.reply_text(
+            "Обновление регистраций...\nЭто может занять некоторое время."
+        )
+    elif update.callback_query:
+        wait_message = await update.callback_query.message.reply_text(
+            "Обновление регистраций...\nЭто может занять некоторое время."
+        )
 
     email_client = EmailClient(
         os.environ.get("EMAIL_ADDRESS"),
@@ -283,4 +296,8 @@ def fetch_registrations():
         "registrations",
         event_manager.get_registrations(),
         config.REGISTRATIONS_CACHE_LIFETIME,
+    )
+
+    await context.bot.delete_message(
+        chat_id=update.effective_chat.id, message_id=wait_message.message_id
     )
