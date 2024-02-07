@@ -1,4 +1,6 @@
-# mostpp-mailing-bot 
+# mostpp-mailing-bot
+
+This bot obtains registration information by reading notification emails in your inbox. Subsequently, you can view the data of those who registered, send them confirmation letters or thanks for their participation.
 
 ### Environment variables
 
