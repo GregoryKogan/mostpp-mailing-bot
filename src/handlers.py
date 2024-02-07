@@ -42,7 +42,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 async def meaningless(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
-        f"I don't know this command: '{update.message.text}'"
+        f"Бот не знает такой команды: '{update.message.text}'"
     )
 
 

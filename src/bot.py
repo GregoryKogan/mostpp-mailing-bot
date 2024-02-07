@@ -35,9 +35,7 @@ def main():
 
     application.add_handler(CallbackQueryHandler(middleware(callback_query)))
 
-    application.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, middleware(meaningless))
-    )
+    application.add_handler(MessageHandler(filters.TEXT, middleware(meaningless)))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
