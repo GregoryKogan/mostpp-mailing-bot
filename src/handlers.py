@@ -66,7 +66,7 @@ async def registrations(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
     await update.message.reply_text(msg_text, parse_mode=constants.ParseMode.HTML)
     await update.message.reply_text(
-        "Вы можете посмотреть регистрации на конкретное мероприятие, нажав на кнопку ниже:",
+        "Вы можете посмотреть регистрации на конкретное мероприятие, выбрав его ниже:",
         reply_markup=InlineKeyboardMarkup(
             [
                 [
