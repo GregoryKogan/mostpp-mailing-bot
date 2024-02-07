@@ -12,6 +12,7 @@ import config
 from EventManager import EventManager, EmailClient
 from CallbackHasher import CallbackHasher
 from Cache import Cache
+from excel import generate_workbook
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -28,15 +29,18 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "<b>Для этого бота доступны следующие команды:</b>\n"
         "/start - начать работу с ботом\n"
         "/help - получить справку\n"
-        "/registrations - просмотреть регистрации на мероприятия\n\n"
+        "/registrations - просмотреть регистрации на мероприятия\n"
+        "/generate_excel - сгенерировать Excel-файл с регистрациями\n\n"
         "<b>Конфигурация:</b>\n"
         f" - Рабочий email: \n{os.environ.get('EMAIL_ADDRESS')}\n"
         f" - Email уведомителя: \n{os.environ.get('NOTIFIER_ADDRESS')}\n"
         f" - Максимальное время регистрации: \n{config.REGISTRATION_PERIOD} мес\n"
         f" - Ключевые слова в теме письма: \n<code>{', '.join(config.REGISTRATION_SUBJECT_KEYWORDS)}</code>\n"
         f" - Время жизни кеша регистраций: \n{config.REGISTRATIONS_CACHE_LIFETIME} сек\n\n"
+        "Исходный код: <a href='https://github.com/GregoryKogan/email-automation'>GitHub</a>\n\n"
         "Тех. поддержка: @GregoryKogan\n",
         parse_mode=constants.ParseMode.HTML,
+        disable_web_page_preview=True,
     )
 
 
@@ -75,6 +79,20 @@ async def registrations(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
             ]
         ),
     )
+
+
+async def generate_excel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await fetch_registrations(update, context)
+
+    cache = Cache()
+    registrations = cache.get("registrations")
+
+    await update.message.reply_text("Генерация Excel-файла...")
+    filename = generate_workbook(registrations)
+    await update.message.reply_document(
+        document=open(filename, "rb"), filename=filename
+    )
+    os.remove(filename)
 
 
 async def callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):

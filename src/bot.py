@@ -15,7 +15,14 @@ from telegram.ext import (
 )
 
 from middleware import middleware
-from handlers import meaningless, help_command, start, registrations, callback_query
+from handlers import (
+    meaningless,
+    help_command,
+    start,
+    registrations,
+    callback_query,
+    generate_excel,
+)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -32,6 +39,9 @@ def main():
     application.add_handler(CommandHandler("start", middleware(start)))
     application.add_handler(CommandHandler("help", middleware(help_command)))
     application.add_handler(CommandHandler("registrations", middleware(registrations)))
+    application.add_handler(
+        CommandHandler("generate_excel", middleware(generate_excel))
+    )
 
     application.add_handler(CallbackQueryHandler(middleware(callback_query)))
 
