@@ -32,9 +32,9 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "<b>Конфигурация:</b>\n"
         f" - Рабочий email: \n{os.environ.get('EMAIL_ADDRESS')}\n"
         f" - Email уведомителя: \n{os.environ.get('NOTIFIER_ADDRESS')}\n"
-        f" - Максимальное время регистрации: \n{config.REGISTRATION_PERIOD} мес.\n"
+        f" - Максимальное время регистрации: \n{config.REGISTRATION_PERIOD} мес\n"
         f" - Ключевые слова в теме письма: \n<code>{', '.join(config.REGISTRATION_SUBJECT_KEYWORDS)}</code>\n"
-        f" - Время жизни кеша регистраций: \n{config.REGISTRATIONS_CACHE_LIFETIME} сек.\n\n"
+        f" - Время жизни кеша регистраций: \n{config.REGISTRATIONS_CACHE_LIFETIME} сек\n\n"
         "Тех. поддержка: @GregoryKogan\n",
         parse_mode=constants.ParseMode.HTML,
     )
@@ -51,7 +51,9 @@ async def registrations(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
     cache = Cache()
     registrations = cache.get("registrations")
-    msg_text = "Registrations:\n"
+    msg_text = (
+        f"<b>Все регистрации за последение {config.REGISTRATION_PERIOD} мес:</b>\n"
+    )
     events = list(registrations.keys())
     for event in events:
         msg_text += f"\n\n<b>{event}:</b>\n"
@@ -60,7 +62,7 @@ async def registrations(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
     await update.message.reply_text(msg_text, parse_mode=constants.ParseMode.HTML)
     await update.message.reply_text(
-        "You may select an event to see more options.",
+        "Вы можете посмотреть регистрации на конкретное мероприятие, нажав на кнопку ниже:",
         reply_markup=InlineKeyboardMarkup(
             [
                 [
@@ -94,7 +96,7 @@ async def callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data.startswith("nthan$"):
         await cancel_sending_thankful_emails(update, context, query)
     else:
-        await query.message.reply_text(f"Unknown callback query: {query.data}")
+        await query.message.reply_text(f"Нажата неизвестная боту кнопка: {query.data}")
 
 
 async def event_callback_query(
@@ -119,11 +121,11 @@ async def event_callback_query(
             [
                 [
                     InlineKeyboardButton(
-                        "Send confirmation",
+                        "Подтверждения",
                         callback_data=f"conf${CallbackHasher.hash_callback(event)}",
                     ),
                     InlineKeyboardButton(
-                        "Send thanks",
+                        "Благодарности",
                         callback_data=f"thank${CallbackHasher.hash_callback(event)}",
                     ),
                 ]
@@ -146,18 +148,19 @@ async def confirmation_callback_query(
     msg_text = "".join(
         f"{registration.email}\n" for registration in registrations[event]
     )
-    msg_text += f"\n Are you sure you want to send confirmation emails for '{event}' to all these people?"
+    msg_text += f"\nВы уверены, что хотите отправить письма, подтверждающие участие в мероприятии \n<b>'{event}'</b>\nвсем этим людям? \nВсего писем: {len(registrations[event])}"
     confirmation_message = await query.message.reply_text(
         msg_text,
+        parse_mode=constants.ParseMode.HTML,
         reply_markup=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
-                        "Yes",
+                        "Да",
                         callback_data=f"yconf${CallbackHasher.hash_callback(event)}",
                     ),
                     InlineKeyboardButton(
-                        "No",
+                        "Нет",
                         callback_data=f"nconf${CallbackHasher.hash_callback(event)}",
                     ),
                 ]
@@ -181,18 +184,19 @@ async def thanks_callback_query(
     msg_text = "".join(
         f"{registration.email}\n" for registration in registrations[event]
     )
-    msg_text += f"\n Are you sure you want to send thankful emails for '{event}' to all these people?"
+    msg_text += f"\nВы уверены, что хотите отправить письма благодарности за участие в мероприятии \n<b>'{event}'</b>\nвсем этим людям? \nВсего писем: {len(registrations[event])}"
     confirmation_message = await query.message.reply_text(
         msg_text,
+        parse_mode=constants.ParseMode.HTML,
         reply_markup=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
-                        "Yes",
+                        "Да",
                         callback_data=f"ythan${CallbackHasher.hash_callback(event)}",
                     ),
                     InlineKeyboardButton(
-                        "No",
+                        "Нет",
                         callback_data=f"nthan${CallbackHasher.hash_callback(event)}",
                     ),
                 ]
@@ -206,7 +210,7 @@ async def send_confirmation_emails(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
     await query.message.reply_text(
-        "Sending confirmation emails feature is not yet implemented."
+        "Возможность отправки писем подтверждения участия в мероприятии пока не реализована."
     )
 
     if "last_confirmation_message" in context.user_data:
@@ -220,7 +224,10 @@ async def send_confirmation_emails(
 async def cancel_sending_confirmation_emails(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
-    await query.message.reply_text("Confirmation emails were not sent.")
+    await query.message.reply_text(
+        "Письма подтверждения участия <b>не</b> были отправлены.",
+        parse_mode=constants.ParseMode.HTML,
+    )
 
     if "last_confirmation_message" in context.user_data:
         await context.bot.delete_message(
@@ -234,7 +241,7 @@ async def send_thankful_emails(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
     await query.message.reply_text(
-        "Sending thankful emails feature is not yet implemented."
+        "Возможность отправки писем благодарности за участие в мероприятии пока не реализована."
     )
 
     if "last_confirmation_message" in context.user_data:
@@ -248,7 +255,10 @@ async def send_thankful_emails(
 async def cancel_sending_thankful_emails(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
-    await query.message.reply_text("Thankful emails were not sent.")
+    await query.message.reply_text(
+        "Письма благодарности <b>не</b> были отправлены.",
+        parse_mode=constants.ParseMode.HTML,
+    )
 
     if "last_confirmation_message" in context.user_data:
         await context.bot.delete_message(
