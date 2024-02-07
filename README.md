@@ -8,6 +8,7 @@
 - `EMAIL_APP_PASSWORD`: App password for the email address
 - `NOTIFIER_ADDRESS`: Email address to receive notifications from
 - `BOT_TOKEN`: Telegram bot token
+- `ALLOWED_USERS`: String of comma-separated list of allowed users
 
 Example:
 
@@ -16,4 +17,5 @@ EMAIL_ADDRESS=john.doe@mail.ru
 EMAIL_APP_PASSWORD=123ABC123ABC
 NOTIFIER_ADDRESS=notifier@organization.com
 BOT_TOKEN=12312313123:ABCABCABCABC
+ALLOWED_USERS="123456789,987654321"
 ```
