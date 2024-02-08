@@ -10,7 +10,7 @@ import os
 
 import config
 
-from EventManagement.EventManager import EventManager, EmailClient
+from EventManagement.EventManager import EventManager, EmailReadingClient
 from Chatbot.CallbackHasher import CallbackHasher
 from Chatbot.Cache import Cache
 from Chatbot.excel import generate_workbook
@@ -305,7 +305,7 @@ async def fetch_registrations(update: Update, context: ContextTypes.DEFAULT_TYPE
             "Обновление регистраций...\nЭто может занять некоторое время."
         )
 
-    email_client = EmailClient(
+    email_client = EmailReadingClient(
         os.environ.get("EMAIL_ADDRESS"),
         os.environ.get("EMAIL_APP_PASSWORD"),
         "imap.mail.ru",

@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from datetime import datetime
 
 
-class EmailClient:
+class EmailReadingClient:
     def __init__(self, address: str, password: str, imap_server: str) -> None:
         self.address = address
         self.password = password
@@ -54,7 +54,7 @@ class EmailClient:
         return [
             message
             for message in messages
-            if sender.lower() in EmailClient.get_sender(message).lower()
+            if sender.lower() in EmailReadingClient.get_sender(message).lower()
         ]
 
     @staticmethod
