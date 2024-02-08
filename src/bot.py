@@ -14,8 +14,8 @@ from telegram.ext import (
     ApplicationBuilder,
 )
 
-from middleware import middleware
-from handlers import (
+from Chatbot.middleware import middleware
+from Chatbot.handlers import (
     meaningless,
     help_command,
     start,

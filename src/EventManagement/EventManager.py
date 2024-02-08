@@ -1,8 +1,8 @@
 import config
 import base64
 
-from EmailClient import EmailClient
-from NotificationScraper import NotificationScraper, RegistrationInfo
+from Mailing.EmailClient import EmailClient
+from EventManagement.NotificationScraper import NotificationScraper, RegistrationInfo
 
 
 class EventManager:

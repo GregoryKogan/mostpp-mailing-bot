@@ -3,8 +3,9 @@ from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import os
 
+
 import config
-from EventManager import RegistrationInfo
+from EventManagement.EventManager import RegistrationInfo
 
 
 def generate_workbook(registrations: dict[str, list[RegistrationInfo]]) -> str:

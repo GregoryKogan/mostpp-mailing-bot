@@ -9,10 +9,11 @@ from telegram.ext import (
 import os
 
 import config
-from EventManager import EventManager, EmailClient
-from CallbackHasher import CallbackHasher
-from Cache import Cache
-from excel import generate_workbook
+
+from EventManagement.EventManager import EventManager, EmailClient
+from Chatbot.CallbackHasher import CallbackHasher
+from Chatbot.Cache import Cache
+from Chatbot.excel import generate_workbook
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
