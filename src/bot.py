@@ -1,14 +1,10 @@
 import logging
-from time import sleep
 from dotenv import load_dotenv
 import os
-
-from telegram import ForceReply, Update
+from telegram import Update
 from telegram.ext import (
-    Application,
     CommandHandler,
     CallbackQueryHandler,
-    ContextTypes,
     MessageHandler,
     filters,
     ApplicationBuilder,
@@ -24,11 +20,13 @@ from Chatbot.handlers import (
     generate_excel,
     test,
 )
+import config
+
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
-    filename="bot.log",
+    filename="bot.log" if config.MODE == "PROD" else None,
 )
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
