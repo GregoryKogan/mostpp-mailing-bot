@@ -18,6 +18,7 @@ from Chatbot.handlers import (
     registrations,
     callback_query,
     generate_excel,
+    plaintext,
     test,
 )
 import config
@@ -33,7 +34,12 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    application = ApplicationBuilder().token(os.environ.get("BOT_TOKEN")).build()
+    application = (
+        ApplicationBuilder()
+        .token(os.environ.get("BOT_TOKEN"))
+        .concurrent_updates(False)
+        .build()
+    )
 
     application.add_handler(CommandHandler("start", middleware(start)))
     application.add_handler(CommandHandler("help", middleware(help_command)))
@@ -44,6 +50,10 @@ def main():
     application.add_handler(CommandHandler("test", middleware(test)))
 
     application.add_handler(CallbackQueryHandler(middleware(callback_query)))
+
+    application.add_handler(
+        MessageHandler(filters.TEXT & ~filters.COMMAND, middleware(plaintext))
+    )
 
     application.add_handler(MessageHandler(filters.TEXT, middleware(meaningless)))
 

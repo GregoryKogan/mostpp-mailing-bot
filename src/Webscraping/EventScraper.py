@@ -11,6 +11,12 @@ class EventData:
     time: str
     passed: bool
 
+    def __setitem__(self, key: str, value: str) -> None:
+        setattr(self, key, value)
+
+    def __str__(self) -> str:
+        return f"<b>Название:</b> {self.name}\n<b>Дата:</b> {self.date}\n<b>Время:</b> {self.time}\n<b>Ссылка:</b> {self.link}"
+
 
 class EventScraper:
     def __init__(
@@ -35,7 +41,7 @@ class EventScraper:
             )
 
         if event_page_url is None:
-            return None
+            return EventData(event_name, "🚫", "🚫", "🚫", "🚫")
 
         event_page = requests.get(event_page_url)
         soup = BeautifulSoup(event_page.text, "html.parser")

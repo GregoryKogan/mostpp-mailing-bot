@@ -7,7 +7,7 @@ import config
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
-    await update.message.reply_html(
+    await update.message.reply_text(
         f"Здравствуйте, {user.full_name}!\n"
         "Это бот для управления регистрациями на мероприятия.\n"
         "Для получения справки используйте команду /help."

@@ -14,6 +14,9 @@ class Cache(metaclass=Singleton):
     def __init__(self):
         self._cache = {}
 
+    def __repr__(self):
+        return f"Cache({self._cache})"
+
     def has_key(self, key) -> bool:
         if key not in self._cache:
             return False

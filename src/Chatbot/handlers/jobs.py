@@ -10,17 +10,11 @@ import config
 
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    client = EmailSendingClient(
-        os.environ.get("EMAIL_ADDRESS"),
-        os.environ.get("EMAIL_APP_PASSWORD"),
-        "smtp.mail.ru",
-        "imap.mail.ru",
-    )
+    from .callback import CallbackType
 
-    send_to = "grisha.koganovskiy@gmail.com"
-    email_content = EmailContent("Test", "This is a test email from the bot.")
-
-    client.send_email(send_to, email_content)
+    print(CallbackType.EVENT_INFO_BEFORE_SENDING_CONFIRMATIONS.name)
+    print(CallbackType.EVENT_INFO_BEFORE_SENDING_THANKS)
+    print(CallbackType.EVENT_REGISTRATIONS.value)
 
     await update.message.reply_text("Test")
 
@@ -78,8 +72,30 @@ async def scrape_event_data(
         config.PAST_EVENTS_PAGE_URL,
     )
 
+    data = scraper.get_event_data(event)
+
     await context.bot.delete_message(
         chat_id=update.effective_chat.id, message_id=wait_message.message_id
     )
 
-    return scraper.get_event_data(event)
+    return data
+
+
+async def get_event_data(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, event: str
+) -> EventData:
+    cache = Cache()
+    if cache.has_key(f"{event}-data"):
+        return cache.get(f"{event}-data")
+
+    data = await scrape_event_data(update, context, event)
+    cache.store(f"{event}-data", data, config.EVENT_DATA_CACHE_LIFETIME)
+
+    return cache.get(f"{event}-data")
+
+
+def update_event_data(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, event: str, data: EventData
+) -> None:
+    cache = Cache()
+    cache.store(f"{event}-data", data, config.EVENT_DATA_CACHE_LIFETIME)
