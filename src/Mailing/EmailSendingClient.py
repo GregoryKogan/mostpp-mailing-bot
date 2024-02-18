@@ -1,6 +1,7 @@
 import smtplib, ssl, imaplib, email
 import time
 import logging
+import os
 from email.message import EmailMessage
 from EmailGeneration.EmailGeneration import EmailContent
 import config
@@ -43,7 +44,9 @@ class EmailSendingClient:
         msg = EmailMessage()
         msg["Subject"] = content.subject
         msg["From"] = self.address
-        msg["To"] = to if config.MODE == "PROD" else self.address
+        msg["To"] = (
+            to if config.MODE == "PROD" else os.environ.get("DUMP_EMAIL_ADDRESS")
+        )
         msg.set_content(content.body)
 
         if errors := self.smtp.send_message(msg):
