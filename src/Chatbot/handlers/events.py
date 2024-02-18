@@ -2,8 +2,7 @@ from telegram import Update, constants, InlineKeyboardMarkup, InlineKeyboardButt
 from telegram.ext import ContextTypes
 
 from .jobs import fetch_registrations
-from Chatbot.Cache import Cache
-from Chatbot.CallbackHasher import CallbackHasher
+from Chatbot.CallbackHasher import CallbackHasher, unhash_event_name
 import config
 
 
@@ -40,10 +39,7 @@ async def event_callback_query(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
     registrations = await fetch_registrations(update, context)
-
-    event = CallbackHasher.unhash_callback(
-        query.data.split("$")[1], list(registrations.keys())
-    )
+    event = unhash_event_name(query.data, registrations)
 
     msg_text = f"<b>{event}:</b>\n"
     for registration in registrations[event]:
@@ -73,10 +69,7 @@ async def confirmation_callback_query(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
     registrations = await fetch_registrations(update, context)
-
-    event = CallbackHasher.unhash_callback(
-        query.data.split("$")[1], list(registrations.keys())
-    )
+    event = unhash_event_name(query.data, registrations)
 
     msg_text = "".join(
         f"{registration.email}\n" for registration in registrations[event]
@@ -107,10 +100,7 @@ async def thanks_callback_query(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ):
     registrations = await fetch_registrations(update, context)
-
-    event = CallbackHasher.unhash_callback(
-        query.data.split("$")[1], list(registrations.keys())
-    )
+    event = unhash_event_name(query.data, registrations)
 
     msg_text = "".join(
         f"{registration.email}\n" for registration in registrations[event]

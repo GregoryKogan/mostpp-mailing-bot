@@ -1,3 +1,5 @@
+MODE = "DEV"  # "DEV" or "PROD" (if "PROD" - send emails to real users, if "DEV" - send emails to yourself)
+
 REGISTRATION_PERIOD = 2  # in months
 
 # all of these keywords should be in the subject

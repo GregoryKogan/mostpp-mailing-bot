@@ -3,7 +3,6 @@ from telegram.ext import ContextTypes
 import os
 
 from .jobs import fetch_registrations
-from Chatbot.Cache import Cache
 from Chatbot.excel import generate_workbook
 
 

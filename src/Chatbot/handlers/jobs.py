@@ -5,6 +5,7 @@ import os
 from Chatbot.Cache import Cache
 from Mailing.EmailReadingClient import EmailReadingClient
 from EventManagement.EventManager import EventManager
+from WebScraping.EventScraper import EventScraper, EventData
 import config
 
 
@@ -57,3 +58,28 @@ async def fetch_registrations(
     )
 
     return cache.get("registrations")
+
+
+async def scrape_event_data(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, event: str
+) -> EventData:
+    if update.message:
+        wait_message = await update.message.reply_text(
+            "Получение информации о мероприятии с официального сайта...\nЭто может занять некоторое время."
+        )
+    elif update.callback_query:
+        wait_message = await update.callback_query.message.reply_text(
+            "Получение информации о мероприятии с официального сайта...\nЭто может занять некоторое время."
+        )
+
+    scraper = EventScraper(
+        config.EVENTS_BASE_URL,
+        config.FUTURE_EVENTS_PAGE_URL,
+        config.PAST_EVENTS_PAGE_URL,
+    )
+
+    await context.bot.delete_message(
+        chat_id=update.effective_chat.id, message_id=wait_message.message_id
+    )
+
+    return scraper.get_event_data(event)

@@ -16,3 +16,9 @@ class CallbackHasher:
             ),
             None,
         )
+
+
+def unhash_event_name(callback: str, registrations: dict[str, any]) -> str:
+    return CallbackHasher.unhash_callback(
+        callback.split("$")[1], list(registrations.keys())
+    )
