@@ -3,15 +3,11 @@ from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import os
 
-
 import config
 from EventManagement.EventManager import RegistrationInfo
 
 
 def generate_workbook(registrations: dict[str, list[RegistrationInfo]]) -> str:
-    # File contains only registrations for last N months (config.REGISTRATION_PERIOD)
-    # File name should contain start and end date of the period
-
     now = datetime.now()
     start_date = now - relativedelta(months=config.REGISTRATION_PERIOD)
     formatted_start_date = start_date.strftime("%d-%m-%Y")

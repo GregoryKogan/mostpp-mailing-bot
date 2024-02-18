@@ -1,27 +1,32 @@
 from telegram import Update, constants, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes
+import os
 
 from .jobs import fetch_registrations, get_event_data
 from . import keyboards
 from Chatbot.CallbackHasher import unhash_event_name
+from Chatbot.excel import generate_workbook
 import config
 
 
 async def registrations(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     registrations = await fetch_registrations(update, context)
 
-    msg_text = (
-        f"<b>Все регистрации за последение {config.REGISTRATION_PERIOD} мес:</b>\n"
+    wait_message = await update.message.reply_text("Генерация Excel-файла...")
+    filename = generate_workbook(registrations)
+    await update.message.reply_document(
+        caption=f"Все регистрации за последение {config.REGISTRATION_PERIOD} мес",
+        document=open(filename, "rb"),
+        filename=filename,
     )
-    events = list(registrations.keys())
-    for event in events:
-        msg_text += f"\n\n<b>{event}:</b>\n"
-        for registration in registrations[event]:
-            msg_text += f"\n{registration.pretty_str()}\n"
+    os.remove(filename)
+    await context.bot.delete_message(
+        chat_id=update.effective_chat.id, message_id=wait_message.message_id
+    )
 
-    await update.message.reply_text(msg_text, parse_mode=constants.ParseMode.HTML)
+    events = list(registrations.keys())
     await update.message.reply_text(
-        "Вы можете посмотреть регистрации на конкретное мероприятие, выбрав его ниже:",
+        "Вы можете выбрать конкретное мероприятие ниже:",
         reply_markup=keyboards.select_event(events),
     )
 
@@ -32,12 +37,8 @@ async def event_specific_registrations(
     registrations = await fetch_registrations(update, context)
     event = unhash_event_name(query.data, registrations)
 
-    msg_text = f"<b>{event}:</b>\n"
-    for registration in registrations[event]:
-        msg_text += f"\n{registration.pretty_str()}\n"
-
     await query.message.reply_text(
-        msg_text,
+        f"<b>{event}</b>\nВсего регистраций: {len(registrations[event])}",
         parse_mode=constants.ParseMode.HTML,
         reply_markup=keyboards.select_mail_type(event),
     )

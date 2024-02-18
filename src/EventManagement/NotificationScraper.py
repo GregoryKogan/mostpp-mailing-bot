@@ -49,7 +49,7 @@ class NotificationScraper:
             return match[1]
 
     def get_event(self) -> str:
-        if match := re.search(r'\*"(.*?)"\*', self.plaintext, re.DOTALL):
+        if match := re.search(r'"(.*?)"', self.plaintext, re.DOTALL):
             return match[1].replace("\n", " ").replace("\r", "")
 
     def get_name(self) -> str:

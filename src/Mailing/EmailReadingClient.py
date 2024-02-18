@@ -1,9 +1,10 @@
 import email
 from email.header import decode_header
 import imaplib
-import base64
+import quopri
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
+import logging
 
 
 class EmailReadingClient:
@@ -19,6 +20,7 @@ class EmailReadingClient:
         self.imap.logout()
 
     def login(self) -> None:
+        logging.info(f"Logging in to {self.imap_server} as {self.address}")
         login_response = self.imap.login(self.address, self.password)
         if login_response[0] != "OK":
             raise ValueError(f"Login failed: {login_response}")
@@ -26,6 +28,7 @@ class EmailReadingClient:
     def get_messages_from_last_n_month_from_sender(
         self, months_ago: int, sender: str
     ) -> list:
+        logging.info(f"Getting messages from last {months_ago} months from {sender}")
         uids = self.get_email_uids_from_last_n_months(months_ago)
         messages = [self.read_email(uid) for uid in uids]
         return self.filter_by_sender(messages, sender)
@@ -76,7 +79,7 @@ class EmailReadingClient:
     @staticmethod
     def get_plain_text_body(message) -> str:
         return "".join(
-            base64.b64decode(part.get_payload()).decode()
+            quopri.decodestring(part.get_payload()).decode()
             for part in message.walk()
             if (
                 part.get_content_maintype() == "text"
