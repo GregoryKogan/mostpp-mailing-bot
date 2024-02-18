@@ -16,6 +16,8 @@ from Chatbot.handlers import (
     help_command,
     start,
     registrations,
+    get_logs,
+    clear_logs,
     callback_query,
     generate_excel,
     plaintext,
@@ -46,6 +48,9 @@ def main():
     application.add_handler(
         CommandHandler("generate_excel", middleware(generate_excel))
     )
+
+    application.add_handler(CommandHandler("get_logs", middleware(get_logs)))
+    application.add_handler(CommandHandler("clear_logs", middleware(clear_logs)))
 
     application.add_handler(CallbackQueryHandler(middleware(callback_query)))
 

@@ -1,6 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 import os
+import logging
 
 from Chatbot.Cache import Cache
 from Mailing.EmailReadingClient import EmailReadingClient
@@ -89,3 +90,21 @@ def update_event_data(
 ) -> None:
     cache = Cache()
     cache.store(f"{event}-data", data, config.EVENT_DATA_CACHE_LIFETIME)
+
+
+async def get_logs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if config.MODE == "DEV":
+        await update.message.reply_text("Бот работает в режиме разработки")
+        return
+
+    with open("bot.log") as bot_file:
+        await update.message.reply_document(bot_file, filename="bot.log")
+
+
+async def clear_logs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if config.MODE == "DEV":
+        await update.message.reply_text("Бот работает в режиме разработки")
+        return
+
+    open("bot.log", "w").close()
+    logging.info("Logs cleared")
