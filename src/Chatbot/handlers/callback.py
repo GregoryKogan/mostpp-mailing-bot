@@ -1,5 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
+import logging
 
 from Chatbot.CallbackHasher import CallbackType, parse_callback_type
 from .events import (
@@ -76,7 +77,7 @@ async def callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if routing.get(callback_type):
         await routing[callback_type]["function"](*routing[callback_type]["args"])
     else:
-        # TODO: Log unknown callback
+        logging.warning(f"Unknown callback type: {callback_type}")
         await query.message.reply_text(f"Нажата неизвестная боту кнопка: {query.data}")
 
 
@@ -98,7 +99,7 @@ async def generate_email_case(
     elif context.user_data.get("mail_type") == "thanks":
         await generate_thankful_emails(update, context, query)
     else:
-        # TODO: Log unknown mail type
+        logging.warning(f"Unknown mail type: {context.user_data.get('mail_type')}")
         await query.message.reply_text(
             f"Неизвестный тип письма: '{context.user_data.get('mail_type')}'.\nВозможно, вы нажали кнопку на старом сообщении."
         )
@@ -112,7 +113,7 @@ async def send_email_case(
     elif context.user_data.get("mail_type") == "thanks":
         await send_thankful_emails(update, context, query)
     else:
-        # TODO: Log unknown mail type
+        logging.warning(f"Unknown mail type: {context.user_data.get('mail_type')}")
         await query.message.reply_text(
             f"Неизвестный тип письма: '{context.user_data.get('mail_type')}'.\nВозможно, вы нажали кнопку на старом сообщении."
         )

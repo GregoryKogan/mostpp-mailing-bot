@@ -1,5 +1,6 @@
 import smtplib, ssl, imaplib, email
 import time
+import logging
 from email.message import EmailMessage
 from EmailGeneration.EmailGeneration import EmailContent
 import config
@@ -46,7 +47,7 @@ class EmailSendingClient:
         msg.set_content(content.body)
 
         if errors := self.smtp.send_message(msg):
-            # TODO: log errors
+            logging.error(errors)
             raise RuntimeError(errors)
 
         self.imap.append(
