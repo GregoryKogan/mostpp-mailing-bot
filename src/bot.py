@@ -19,7 +19,6 @@ from Chatbot.handlers import (
     callback_query,
     generate_excel,
     plaintext,
-    test,
 )
 import config
 
@@ -47,7 +46,6 @@ def main():
     application.add_handler(
         CommandHandler("generate_excel", middleware(generate_excel))
     )
-    application.add_handler(CommandHandler("test", middleware(test)))
 
     application.add_handler(CallbackQueryHandler(middleware(callback_query)))
 

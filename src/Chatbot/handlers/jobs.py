@@ -9,16 +9,6 @@ from WebScraping.EventScraper import EventScraper, EventData
 import config
 
 
-async def test(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    from .callback import CallbackType
-
-    print(CallbackType.EVENT_INFO_BEFORE_SENDING_CONFIRMATIONS.name)
-    print(CallbackType.EVENT_INFO_BEFORE_SENDING_THANKS)
-    print(CallbackType.EVENT_REGISTRATIONS.value)
-
-    await update.message.reply_text("Test")
-
-
 async def fetch_registrations(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> any:

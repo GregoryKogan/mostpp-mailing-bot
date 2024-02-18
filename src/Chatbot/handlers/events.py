@@ -62,6 +62,8 @@ async def event_info(
 async def change_event_info(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ) -> None:
+    if not context.user_data.get("last_event_info_message_id"):
+        return
     registrations = await fetch_registrations(update, context)
     event = unhash_event_name(query.data, registrations)
     await context.bot.edit_message_reply_markup(
@@ -74,6 +76,8 @@ async def change_event_info(
 async def go_back_from_changing_event_info(
     update: Update, context: ContextTypes.DEFAULT_TYPE, query: Update.callback_query
 ) -> None:
+    if not context.user_data.get("last_event_info_message_id"):
+        return
     registrations = await fetch_registrations(update, context)
     event = unhash_event_name(query.data, registrations)
     await context.bot.edit_message_reply_markup(

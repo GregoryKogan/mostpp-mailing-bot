@@ -13,6 +13,8 @@ class CallbackType(Enum):
     CHANGE_EVENT_TIME = 7
     CHANGE_EVENT_LINK = 8
     GO_BACK_FROM_CHANGING_EVENT_DATA = 9
+    SEND_EMAIL = 10
+    CANCEL_SENDING_EMAIL = 11
 
 
 class CallbackHasher:

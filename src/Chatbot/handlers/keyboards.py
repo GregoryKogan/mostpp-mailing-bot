@@ -98,3 +98,24 @@ def select_field_to_change(event: str) -> InlineKeyboardMarkup:
             ],
         ]
     )
+
+
+def send_email_or_cancel(event: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(
+                    "Отправить",
+                    callback_data=build_event_action_callback(
+                        CallbackType.SEND_EMAIL, event
+                    ),
+                ),
+                InlineKeyboardButton(
+                    "Отменить",
+                    callback_data=build_event_action_callback(
+                        CallbackType.CANCEL_SENDING_EMAIL, event
+                    ),
+                ),
+            ]
+        ]
+    )

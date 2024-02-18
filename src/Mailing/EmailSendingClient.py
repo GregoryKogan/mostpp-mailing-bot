@@ -2,6 +2,7 @@ import smtplib, ssl, imaplib, email
 import time
 from email.message import EmailMessage
 from EmailGeneration.EmailGeneration import EmailContent
+import config
 
 
 class EmailSendingClient:
@@ -41,10 +42,11 @@ class EmailSendingClient:
         msg = EmailMessage()
         msg["Subject"] = content.subject
         msg["From"] = self.address
-        msg["To"] = to
+        msg["To"] = to if config.MODE == "PROD" else self.address
         msg.set_content(content.body)
 
         if errors := self.smtp.send_message(msg):
+            # TODO: log errors
             raise RuntimeError(errors)
 
         self.imap.append(
