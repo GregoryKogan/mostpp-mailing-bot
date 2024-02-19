@@ -19,7 +19,7 @@ def allowed(update: Update) -> bool:
 def middleware(handler_func: callable) -> callable:
     async def wrap(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logging.info(
-            f"User {update.effective_user.id} called {handler_func.__name__} handler"
+            f"User {update.effective_user.full_name} called {handler_func.__name__} handler"
         )
         if not allowed(update):
             logging.warning(f"User {update.effective_user.id} is not allowed")
@@ -27,7 +27,7 @@ def middleware(handler_func: callable) -> callable:
             return
         await handler_func(update, context)
         logging.info(
-            f"User {update.effective_user.id} finished {handler_func.__name__} handler"
+            f"User {update.effective_user.full_name} finished {handler_func.__name__} handler"
         )
 
     return wrap
