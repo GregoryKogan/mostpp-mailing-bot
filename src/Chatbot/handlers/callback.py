@@ -75,6 +75,7 @@ async def callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
 
     if routing.get(callback_type):
+        logging.info(f"Callback type: {callback_type.name}")
         await routing[callback_type]["function"](*routing[callback_type]["args"])
     else:
         logging.warning(f"Unknown callback type: {callback_type}")
