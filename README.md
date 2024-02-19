@@ -35,3 +35,5 @@ The most important setting is `MODE` which can be either `DEV` or `PROD`. In `DE
 docker-compose build
 docker-compose up -d
 ```
+
+Container will be started in detached mode. It's configured to always restart on failure. So to stop the bot, use `docker rm`.
