@@ -94,6 +94,7 @@ def update_event_data(
 
 async def get_logs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if config.MODE == "DEV":
+        logging.info("Bot is in development mode and can't send logs")
         await update.message.reply_text("Бот работает в режиме разработки")
         return
 
@@ -103,6 +104,7 @@ async def get_logs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def clear_logs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if config.MODE == "DEV":
+        logging.info("Bot is in development mode and can't clear logs")
         await update.message.reply_text("Бот работает в режиме разработки")
         return
 
