@@ -27,7 +27,7 @@ import config
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
-    filename="bot.log" if config.MODE == "PROD" else None,
+    filename=None if config.MODE == "DEV" else "bot.log",
 )
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)

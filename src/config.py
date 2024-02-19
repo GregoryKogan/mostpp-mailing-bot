@@ -1,4 +1,7 @@
-MODE = "DEV"  # "DEV" or "PROD" (if "PROD" - send emails to real users, if "DEV" - send emails to yourself)
+MODE = "TEST"  # "DEV", "PROD" or "TEST"
+# PROD - send emails to real users, log to file
+# DEV - send emails to dump email, log to console
+# TEST - send emails to dump email, log to file
 
 REGISTRATION_PERIOD = 2  # in months
 

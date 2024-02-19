@@ -15,12 +15,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    mode_names = {
+        "DEV": "Разработка",
+        "PROD": "Продакшн",
+        "TEST": "Тестирование",
+    }
     await update.message.reply_text(
         "<b>Для этого бота доступны следующие команды:</b>\n"
         "/start - начать работу с ботом\n"
         "/help - получить справку\n"
         "/registrations - просмотреть регистрации на мероприятия\n\n"
         "<b>Конфигурация:</b>\n"
+        f" - Режим работы: \n{mode_names[config.MODE]}\n"
         f" - Рабочий email: \n{os.environ.get('EMAIL_ADDRESS')}\n"
         f" - Email уведомителя: \n{os.environ.get('NOTIFIER_ADDRESS')}\n"
         f" - Максимальное время регистрации: \n{config.REGISTRATION_PERIOD} мес\n"
