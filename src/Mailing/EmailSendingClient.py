@@ -37,18 +37,24 @@ class EmailSendingClient:
     def send_email_to_mailing_list(
         self, mailing_list: list[str], content: EmailContent
     ) -> None:
-        for recipient in mailing_list:
-            self.send_email(recipient, content)
+        chunk_size = 10
+        for i in range(0, len(mailing_list), chunk_size):
+            msg = self.build_message(content)
+            msg["To"] = (
+                ", ".join(mailing_list[i : i + chunk_size])
+                if config.MODE == "PROD"
+                else ", ".join([os.environ.get("DUMP_EMAIL_ADDRESS")] * chunk_size)
+            )
+            self.attempt_sending(msg)
 
     def send_email(self, to: str, content: EmailContent) -> None:
-        msg = EmailMessage()
-        msg["Subject"] = content.subject
-        msg["From"] = self.address
+        msg = self.build_message(content)
         msg["To"] = (
             to if config.MODE == "PROD" else os.environ.get("DUMP_EMAIL_ADDRESS")
         )
-        msg.set_content(content.body)
+        self.attempt_sending(msg)
 
+    def attempt_sending(self, msg):
         if errors := self.smtp.send_message(msg):
             logging.error(errors)
             raise RuntimeError(errors)
@@ -59,6 +65,13 @@ class EmailSendingClient:
             imaplib.Time2Internaldate(time.time()),
             msg.as_string().encode("utf8"),
         )
+
+    def build_message(self, content):
+        msg = EmailMessage()
+        msg["Subject"] = content.subject
+        msg["From"] = self.address
+        msg.set_content(content.body)
+        return msg
 
     def get_sent_folder_name(self):
         _, mailing_list = self.imap.list()
