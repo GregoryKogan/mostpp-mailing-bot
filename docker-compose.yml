@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   telegram-bot:
-    container_name: telegram-bot
+    container_name: mostpp-bot
     working_dir: /telegram_bot
     restart: always
     build:
