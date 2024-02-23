@@ -29,3 +29,5 @@ POST_EVENT_EMAIL_TEMPLATE_PATH = "assets/email_templates/post-event-email-templa
 POST_EVENT_EMAIL_SUBJECT_TEMPLATE_PATH = (
     "assets/email_templates/post-event-email-subject-template.txt"
 )
+
+TIMEZONE = "Europe/Moscow"
