@@ -14,6 +14,7 @@ This bot obtains registration information by reading notification emails in your
 - `DUMP_EMAIL_ADDRESS`: Email address to send all emails to in DEV mode
 - `BOT_TOKEN`: Telegram bot token
 - `ALLOWED_USERS`: String of comma-separated list of allowed users
+- `DEVELOPER_CHAT_ID`: Chat ID of the developer
 
 Example:
 
@@ -24,6 +25,7 @@ NOTIFIER_ADDRESS=notifier@organization.com
 DUMP_EMAIL_ADDRESS=jane.doe@mail.ru
 BOT_TOKEN=12312313123:ABCABCABCABC
 ALLOWED_USERS="123456789,987654321"
+DEVELOPER_CHAT_ID=123456789
 ```
 
 ### Configuration

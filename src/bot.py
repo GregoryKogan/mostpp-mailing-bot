@@ -1,6 +1,3 @@
-import logging
-import pytz
-from datetime import datetime, timezone
 from dotenv import load_dotenv
 import os
 from telegram import Update
@@ -17,6 +14,7 @@ from Chatbot.handlers import (
     meaningless,
     help_command,
     start,
+    error_handler,
     registrations,
     get_logs,
     clear_logs,
@@ -24,22 +22,7 @@ from Chatbot.handlers import (
     plaintext,
 )
 import config
-
-
-def utc_to_local(*args):
-    utc_dt = datetime.now(timezone.utc)
-    my_timezone = pytz.timezone(config.TIMEZONE)
-    converted = utc_dt.replace(tzinfo=pytz.utc).astimezone(tz=my_timezone)
-    return converted.timetuple()
-
-
-logging.Formatter.converter = utc_to_local
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO,
-    filename=None if config.MODE == "DEV" else "bot.log",
-)
-logging.getLogger("httpx").setLevel(logging.WARNING)
+from Logging.logger_config import logger
 
 
 def main():
@@ -64,6 +47,8 @@ def main():
     )
 
     application.add_handler(MessageHandler(filters.TEXT, middleware(meaningless)))
+
+    application.add_error_handler(error_handler)
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 

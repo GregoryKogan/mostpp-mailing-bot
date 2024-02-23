@@ -1,4 +1,4 @@
-from .default import meaningless, help_command, start
+from .default import meaningless, help_command, start, error_handler
 from .events import registrations
 from .callback import callback_query
 from .plaintext import plaintext

@@ -1,7 +1,12 @@
 from telegram import Update, constants
 from telegram.ext import ContextTypes
+from telegram.constants import ParseMode
 import os
+import traceback
+import html
+import json
 
+from Logging.logger_config import logger
 import config
 
 
@@ -43,3 +48,44 @@ async def meaningless(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await update.message.reply_text(
         f"Бот не знает такой команды: '{update.message.text}'"
     )
+
+
+async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if is_library_error(context.error):
+        logger.warning(f"Library error: {context.error.__str__()}")
+        return
+
+    logger.error(
+        "An exception was raised while handling an update:", exc_info=context.error
+    )
+
+    tb_list = traceback.format_exception(
+        None, context.error, context.error.__traceback__
+    )
+
+    tb_string = "".join(tb_list)
+    update_str = update.to_dict() if isinstance(update, Update) else str(update)
+
+    message = (
+        "An exception was raised while handling an update\n"
+        f"<pre>update = {html.escape(json.dumps(update_str, indent=2, ensure_ascii=False))}"
+        "</pre>\n\n"
+        f"<pre>context.chat_data = {html.escape(str(context.chat_data))}</pre>\n\n"
+        f"<pre>context.user_data = {html.escape(str(context.user_data))}</pre>\n\n"
+        f"<pre>{html.escape(tb_string)}</pre>"
+    )
+
+    await context.bot.send_message(
+        chat_id=os.environ.get("DEVELOPER_CHAT_ID"),
+        text=message,
+        parse_mode=ParseMode.HTML,
+    )
+
+
+def is_library_error(error: Exception) -> bool:
+    tb = error.__traceback__
+    while tb is not None:
+        if "site-packages" in tb.tb_frame.f_code.co_filename:
+            return True
+        tb = tb.tb_next
+    return False
