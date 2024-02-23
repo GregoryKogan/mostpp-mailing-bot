@@ -38,4 +38,4 @@ docker compose build
 docker compose up -d
 ```
 
-Container will be started in detached mode. It's configured to always restart on failure. So to stop the bot, use `docker rm`.
+Container will be started in detached mode. It's configured to always restart on failure. So to stop the bot, use `docker stop` followed by `docker rm`.
