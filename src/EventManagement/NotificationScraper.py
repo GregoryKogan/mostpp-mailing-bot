@@ -61,9 +61,7 @@ class NotificationScraper:
             return match[0]
 
     def get_email(self) -> str:
-        if match := re.search(
-            r"\+?\d[\d\-\(\) ]{7,}\d,\s*([\w\.-]+@[\w\.-]+\.\w+)", self.plaintext
-        ):
+        if match := re.search(r".+,\s*([\w\.-]+@[\w\.-]+\.\w+)", self.plaintext):
             return match[1]
 
     def get_company(self) -> str:
