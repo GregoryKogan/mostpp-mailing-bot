@@ -52,6 +52,8 @@ async def meaningless(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
     if is_library_error(context.error):
+        if config.MODE == "DEV":
+            raise context.error
         logger.warning(f"Library error: {context.error.__str__()}")
         return
 
