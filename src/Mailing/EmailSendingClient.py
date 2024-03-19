@@ -40,10 +40,13 @@ class EmailSendingClient:
         chunk_size = 10
         for i in range(0, len(mailing_list), chunk_size):
             msg = self.build_message(content)
+            current_chunk = mailing_list[i : i + chunk_size]
             msg["To"] = (
-                ", ".join(mailing_list[i : i + chunk_size])
+                ", ".join(current_chunk)
                 if config.MODE == "PROD"
-                else ", ".join([os.environ.get("DUMP_EMAIL_ADDRESS")] * chunk_size)
+                else ", ".join(
+                    [os.environ.get("DUMP_EMAIL_ADDRESS")] * len(current_chunk)
+                )
             )
             self.attempt_sending(msg)
 
@@ -55,9 +58,15 @@ class EmailSendingClient:
         self.attempt_sending(msg)
 
     def attempt_sending(self, msg):
+        logging.info(f"Sending email to {msg['To']}")
         if errors := self.smtp.send_message(msg):
-            logging.error(errors)
-            raise RuntimeError(errors)
+            logging.warning(
+                f"Errors occurred while sending email to {msg['To']}: {errors}"
+            )
+            if config.MODE == "DEV":
+                raise RuntimeError(errors)
+        else:
+            logging.info(f"Email to {msg['To']} sent successfully")
 
         self.imap.append(
             self.get_sent_folder_name(),
