@@ -22,9 +22,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     mode_names = {
-        "DEV": "Разработка",
-        "PROD": "Продакшн",
-        "TEST": "Тестирование",
+        "DEV": "разработка",
+        "PROD": "продакшн",
+        "TEST": "тестирование",
     }
     await update.message.reply_text(
         "<b>Для этого бота доступны следующие команды:</b>\n"
@@ -32,12 +32,16 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "/help - получить справку\n"
         "/registrations - просмотреть регистрации на мероприятия\n\n"
         "<b>Конфигурация:</b>\n"
-        f" - Режим работы: {mode_names[config.MODE]}\n"
-        f" - Рабочий email: {os.environ.get('EMAIL_ADDRESS')}\n"
-        f" - Email уведомителя: {os.environ.get('NOTIFIER_ADDRESS')}\n"
-        f" - Максимальное время регистрации: {config.REGISTRATION_PERIOD} мес\n"
-        f" - Ключевые слова в теме письма: \n<code>{', '.join(config.REGISTRATION_SUBJECT_KEYWORDS)}</code>\n"
-        f" - Время жизни кеша регистраций: {config.REGISTRATIONS_CACHE_LIFETIME // 60} мин\n\n"
+        f" • Режим работы: {mode_names[config.MODE]}\n"
+        f" • Рабочий email: {os.environ.get('EMAIL_ADDRESS')}\n"
+        f" • Email уведомителя: {os.environ.get('NOTIFIER_ADDRESS')}\n"
+        f" • Максимальное время регистрации: {config.REGISTRATION_PERIOD} мес\n"
+        f" • Время жизни кеша регистраций: {config.REGISTRATIONS_CACHE_LIFETIME // 60} мин\n"
+        f" • Время жизни кеша данных о мероприятиях: {config.EVENT_DATA_CACHE_LIFETIME // 60 // 60} ч\n"
+        f" • Базовый URL мероприятий: {config.EVENTS_BASE_URL}\n"
+        f" • URL страницы будущих мероприятий: {config.FUTURE_EVENTS_PAGE_URL}\n"
+        f" • URL страницы прошедших мероприятий: {config.PAST_EVENTS_PAGE_URL}\n"
+        f" • Временная зона: {config.TIMEZONE}\n\n"
         "Исходный код: <a href='https://github.com/GregoryKogan/mostpp-mailing-bot'>GitHub</a>\n\n"
         "Тех. поддержка: @GregoryKogan\n",
         parse_mode=constants.ParseMode.HTML,
