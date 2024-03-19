@@ -32,12 +32,12 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "/help - получить справку\n"
         "/registrations - просмотреть регистрации на мероприятия\n\n"
         "<b>Конфигурация:</b>\n"
-        f" - Режим работы: \n{mode_names[config.MODE]}\n"
-        f" - Рабочий email: \n{os.environ.get('EMAIL_ADDRESS')}\n"
-        f" - Email уведомителя: \n{os.environ.get('NOTIFIER_ADDRESS')}\n"
-        f" - Максимальное время регистрации: \n{config.REGISTRATION_PERIOD} мес\n"
+        f" - Режим работы: {mode_names[config.MODE]}\n"
+        f" - Рабочий email: {os.environ.get('EMAIL_ADDRESS')}\n"
+        f" - Email уведомителя: {os.environ.get('NOTIFIER_ADDRESS')}\n"
+        f" - Максимальное время регистрации: {config.REGISTRATION_PERIOD} мес\n"
         f" - Ключевые слова в теме письма: \n<code>{', '.join(config.REGISTRATION_SUBJECT_KEYWORDS)}</code>\n"
-        f" - Время жизни кеша регистраций: \n{config.REGISTRATIONS_CACHE_LIFETIME} сек\n\n"
+        f" - Время жизни кеша регистраций: {config.REGISTRATIONS_CACHE_LIFETIME // 60} мин\n\n"
         "Исходный код: <a href='https://github.com/GregoryKogan/mostpp-mailing-bot'>GitHub</a>\n\n"
         "Тех. поддержка: @GregoryKogan\n",
         parse_mode=constants.ParseMode.HTML,
