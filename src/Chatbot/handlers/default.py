@@ -5,6 +5,7 @@ import os
 import traceback
 import html
 import json
+from httpx import RemoteProtocolError, ConnectError
 
 from Logging.logger_config import logger
 import config
@@ -51,10 +52,9 @@ async def meaningless(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if is_library_error(context.error):
+    if is_connection_error(context.error):
         if config.MODE == "DEV":
             raise context.error
-        logger.warning(f"Library error: {context.error.__str__()}")
         return
 
     logger.error(
@@ -84,10 +84,5 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
     )
 
 
-def is_library_error(error: Exception) -> bool:
-    tb = error.__traceback__
-    while tb is not None:
-        if "site-packages" in tb.tb_frame.f_code.co_filename:
-            return True
-        tb = tb.tb_next
-    return False
+def is_connection_error(error: Exception) -> bool:
+    return isinstance(error, (RemoteProtocolError, ConnectError))
