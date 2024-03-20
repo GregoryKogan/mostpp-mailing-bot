@@ -51,7 +51,7 @@ class EmailSendingClient:
             )
             return self.attempt_sending(msg)
         except Exception as e:
-            logging.warning(exc_info=e)
+            logging.warning(f"{e}")
             return False
 
     def attempt_sending(self, msg) -> bool:
@@ -68,7 +68,7 @@ class EmailSendingClient:
                 logging.info(f"Email to {msg['To']} sent successfully")
                 return True
         except Exception as e:
-            logging.warning(exc_info=e)
+            logging.warning(f"{e}")
             return False
 
         self.imap.append(
