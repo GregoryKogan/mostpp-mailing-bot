@@ -1,6 +1,7 @@
 # mostpp-mailing-bot
 
 ![GitHub License](https://img.shields.io/github/license/GregoryKogan/mostpp-mailing-bot)
+![](https://tokei.ekzhang.com/b1/github/GregoryKogan/mostpp-mailing-bot)  
 
 This bot obtains registration information by reading notification emails in your inbox. Subsequently, you can view the data of those who registered, send them confirmation letters or thanks for their participation.
 
