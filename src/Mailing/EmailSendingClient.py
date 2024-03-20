@@ -37,18 +37,8 @@ class EmailSendingClient:
     def send_email_to_mailing_list(
         self, mailing_list: list[str], content: EmailContent
     ) -> None:
-        chunk_size = 10
-        for i in range(0, len(mailing_list), chunk_size):
-            msg = self.build_message(content)
-            current_chunk = mailing_list[i : i + chunk_size]
-            msg["To"] = (
-                ", ".join(current_chunk)
-                if config.MODE == "PROD"
-                else ", ".join(
-                    [os.environ.get("DUMP_EMAIL_ADDRESS")] * len(current_chunk)
-                )
-            )
-            self.attempt_sending(msg)
+        for recipient in mailing_list:
+            self.send_email(recipient, content)
 
     def send_email(self, to: str, content: EmailContent) -> None:
         msg = self.build_message(content)
