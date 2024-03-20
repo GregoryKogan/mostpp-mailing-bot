@@ -122,12 +122,16 @@ async def send_emails(
         "imap.mail.ru",
     )
 
-    email_client.send_email_to_mailing_list(recipients, email_content)
+    failed = email_client.send_email_to_mailing_list(recipients, email_content)
 
     await context.bot.delete_message(
         chat_id=update.effective_chat.id, message_id=wait_message.message_id
     )
     await query.message.reply_text("Письма отправлены")
+
+    if len(failed):
+        await query.message.reply_text(f"Не удалось отправить писем: {len(failed)}")
+        await query.message.reply_text(", ".join(failed))
 
     if context.user_data.get("send_message_id"):
         await context.bot.edit_message_reply_markup(

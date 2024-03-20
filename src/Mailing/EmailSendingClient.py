@@ -36,27 +36,40 @@ class EmailSendingClient:
 
     def send_email_to_mailing_list(
         self, mailing_list: list[str], content: EmailContent
-    ) -> None:
-        for recipient in mailing_list:
-            self.send_email(recipient, content)
+    ) -> list[str]:
+        return [
+            recipient
+            for recipient in mailing_list
+            if not self.send_email(recipient, content)
+        ]
 
-    def send_email(self, to: str, content: EmailContent) -> None:
-        msg = self.build_message(content)
-        msg["To"] = (
-            to if config.MODE == "PROD" else os.environ.get("DUMP_EMAIL_ADDRESS")
-        )
-        self.attempt_sending(msg)
-
-    def attempt_sending(self, msg):
-        logging.info(f"Sending email to {msg['To']}")
-        if errors := self.smtp.send_message(msg):
-            logging.warning(
-                f"Errors occurred while sending email to {msg['To']}: {errors}"
+    def send_email(self, to: str, content: EmailContent) -> bool:
+        try:
+            msg = self.build_message(content)
+            msg["To"] = (
+                to if config.MODE == "PROD" else os.environ.get("DUMP_EMAIL_ADDRESS")
             )
-            if config.MODE == "DEV":
-                raise RuntimeError(errors)
-        else:
-            logging.info(f"Email to {msg['To']} sent successfully")
+            return self.attempt_sending(msg)
+        except Exception as e:
+            logging.warning(exc_info=e)
+            return False
+
+    def attempt_sending(self, msg) -> bool:
+        try:
+            logging.info(f"Sending email to {msg['To']}")
+            if errors := self.smtp.send_message(msg):
+                logging.warning(
+                    f"Errors occurred while sending email to {msg['To']}: {errors}"
+                )
+                if config.MODE == "DEV":
+                    raise RuntimeError(errors)
+                return False
+            else:
+                logging.info(f"Email to {msg['To']} sent successfully")
+                return True
+        except Exception as e:
+            logging.warning(exc_info=e)
+            return False
 
         self.imap.append(
             self.get_sent_folder_name(),
