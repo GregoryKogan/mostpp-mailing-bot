@@ -66,7 +66,6 @@ class EmailSendingClient:
                 return False
             else:
                 logging.info(f"Email to {msg['To']} sent successfully")
-                return True
         except Exception as e:
             logging.warning(f"{e}")
             return False
@@ -77,6 +76,7 @@ class EmailSendingClient:
             imaplib.Time2Internaldate(time.time()),
             msg.as_string().encode("utf8"),
         )
+        return True
 
     def build_message(self, content):
         msg = EmailMessage()
