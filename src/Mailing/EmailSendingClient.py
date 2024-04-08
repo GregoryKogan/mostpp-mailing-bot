@@ -37,6 +37,7 @@ class EmailSendingClient:
     def send_email_to_mailing_list(
         self, mailing_list: list[str], content: EmailContent
     ) -> list[str]:
+        logging.info(f"Sending email to mailing list: {mailing_list}")
         return [
             recipient
             for recipient in mailing_list
