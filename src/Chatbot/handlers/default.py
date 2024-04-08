@@ -1,11 +1,14 @@
 from telegram import Update, constants
 from telegram.ext import ContextTypes
 from telegram.constants import ParseMode
+from telegram.error import Conflict, NetworkError, TimedOut
+from httpx import RemoteProtocolError, ConnectError, ReadTimeout
+from socket import gaierror
+from httpcore import ConnectTimeout
 import os
 import traceback
 import html
 import json
-from httpx import RemoteProtocolError, ConnectError
 
 from Logging.logger_config import logger
 import config
@@ -59,12 +62,41 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
     if is_connection_error(context.error):
         if config.MODE == "DEV":
             raise context.error
+        logger.warning(
+            f"Connection error: {type(context.error).__name__}: {context.error}"
+        )
         return
 
     logger.error(
-        "An exception was raised while handling an update:", exc_info=context.error
+        f"{type(context.error).__name__}: {context.error}",
+        exc_info=(type(context.error), context.error, context.error.__traceback__),
     )
 
+    await report_error_to_developer(update, context)
+
+
+def is_connection_error(error: Exception) -> bool:
+    if isinstance(
+        error,
+        (
+            RemoteProtocolError,
+            ConnectError,
+            Conflict,
+            NetworkError,
+            TimedOut,
+            TimeoutError,
+            ReadTimeout,
+            gaierror,
+            ConnectTimeout,
+        ),
+    ):
+        return True
+    return isinstance(error, ValueError) and "api.telegram.org" in str(error)
+
+
+async def report_error_to_developer(
+    update: object, context: ContextTypes.DEFAULT_TYPE
+) -> None:
     tb_list = traceback.format_exception(
         None, context.error, context.error.__traceback__
     )
@@ -86,7 +118,3 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
         text=message,
         parse_mode=ParseMode.HTML,
     )
-
-
-def is_connection_error(error: Exception) -> bool:
-    return isinstance(error, (RemoteProtocolError, ConnectError))
