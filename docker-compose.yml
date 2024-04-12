@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   telegram-bot:
     container_name: mostpp-bot
