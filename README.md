@@ -47,3 +47,5 @@ Container will be started in detached mode. It's configured to always restart on
 docker stop mostpp-bot
 docker rm mostpp-bot
 ```
+
+It's very convenient to deploy the bot to hosting services such as [coolify](https://coolify.io/)
