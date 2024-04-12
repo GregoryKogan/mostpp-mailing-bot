@@ -2,9 +2,6 @@
 
 ![GitHub License](https://img.shields.io/github/license/GregoryKogan/mostpp-mailing-bot)
 ![](https://tokei.ekzhang.com/b1/github/GregoryKogan/mostpp-mailing-bot)
-![Hosted on](https://img.shields.io/badge/coolify-x?style=flat&logo=icloud&logoColor=%23fff&label=hosted%20on&color=%237B00FF)
-
-
 
 This bot obtains registration information by reading notification emails in your inbox. Subsequently, you can view the data of those who registered, send them confirmation letters or thanks for their participation.
 
@@ -50,5 +47,3 @@ Container will be started in detached mode. It's configured to always restart on
 docker stop mostpp-bot
 docker rm mostpp-bot
 ```
-
-It's very convenient to deploy the bot to hosting services such as [coolify](https://coolify.io/)
