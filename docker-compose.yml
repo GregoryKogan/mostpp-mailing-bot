@@ -1,5 +1,13 @@
 services:
   telegram-bot:
+    environment:
+      ALLOWED_USERS: ${ALLOWED_USERS}
+      BOT_TOKEN: ${BOT_TOKEN}
+      DEVELOPER_CHAT_ID: ${DEVELOPER_CHAT_ID}
+      DUMP_EMAIL_ADDRESS: ${DUMP_EMAIL_ADDRESS}
+      EMAIL_ADDRESS: ${EMAIL_ADDRESS}
+      EMAIL_APP_PASSWORD: ${EMAIL_APP_PASSWORD}
+      NOTIFIER_ADDRESS: ${NOTIFIER_ADDRESS}
     container_name: mostpp-bot
     working_dir: /telegram_bot
     restart: always
