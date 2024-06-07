@@ -1,7 +1,6 @@
 import email
 from email.header import decode_header
 import imaplib
-import quopri
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import logging
@@ -79,7 +78,7 @@ class EmailReadingClient:
     @staticmethod
     def get_plain_text_body(message) -> str:
         return "".join(
-            quopri.decodestring(part.get_payload()).decode()
+            part.get_payload(decode=True).decode("utf-8")
             for part in message.walk()
             if (
                 part.get_content_maintype() == "text"

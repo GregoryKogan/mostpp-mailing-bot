@@ -1,4 +1,4 @@
-MODE = "TEST"  # "DEV", "PROD" or "TEST"
+MODE = "PROD"  # "DEV", "PROD" or "TEST"
 # PROD - send emails to real users, log to file
 # DEV - send emails to dump email, log to console
 # TEST - send emails to dump email, log to file
