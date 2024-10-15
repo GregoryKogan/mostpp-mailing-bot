@@ -32,9 +32,13 @@ async def generate_emails(
     registrations = await fetch_registrations(update, context)
     event = unhash_event_name(query.data, registrations)
     recipients = [registration.email for registration in registrations[event]]
-    msg_text = "<b>Адресаты</b>:\n" + ", ".join(recipients)
-    msg_text += f"\nВсего: {len(recipients)}"
-    await query.message.reply_text(msg_text, parse_mode=constants.ParseMode.HTML)
+    await query.message.reply_text(
+        "<b>Адресаты</b>:", parse_mode=constants.ParseMode.HTML
+    )
+    # send recipients in chunks of 50
+    for i in range(0, len(recipients), 50):
+        await query.message.reply_text(", ".join(recipients[i : i + 50]))
+    await query.message.reply_text(f"Всего: {len(recipients)}")
     await query.message.reply_text("Сгенерированное письмо: ")
 
     email_templates = EventEmailGenerator.read_templates(
