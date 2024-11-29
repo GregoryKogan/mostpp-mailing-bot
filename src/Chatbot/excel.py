@@ -18,8 +18,8 @@ def generate_workbook(registrations: dict[str, list[RegistrationInfo]]) -> str:
 
     write_main_worksheet(workbook, registrations)
 
-    for event, event_registrations in registrations.items():
-        write_event_worksheet(workbook, event, event_registrations)
+    for index, (event, event_registrations) in enumerate(registrations.items()):
+        write_event_worksheet(workbook, event, index, event_registrations)
 
     workbook.close()
 
@@ -65,13 +65,14 @@ def write_main_worksheet_row(main_worksheet, current_row, registration):
 
 
 def write_event_worksheet(
-    workbook, event: str, registrations: list[RegistrationInfo]
+    workbook, event: str, event_index: int, registrations: list[RegistrationInfo]
 ) -> None:
     invalid_chars = ["[", "]", ":", "*", "?", "/", "\\"]
     sheet_name = event
     for char in invalid_chars:
         sheet_name = sheet_name.replace(char, "")
-    event_worksheet = workbook.add_worksheet(sheet_name[:31])
+    sheet_name = f"{event_index + 1} {sheet_name}"[:31]
+    event_worksheet = workbook.add_worksheet(sheet_name)
 
     event_headers = [
         "Время регистрации",
